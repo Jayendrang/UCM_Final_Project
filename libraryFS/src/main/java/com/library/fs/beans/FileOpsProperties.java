@@ -29,18 +29,5 @@ public class FileOpsProperties {
 	}
 	
 	
-	
-	
-//	private String book_title = null;
-//	private String[] book_authors = null;
-//	private String book_ISBN = null;
-//	private String book_edition = null;
-//	private String book_released_date = null;
-//	private String uploaded_by = null;
-//	private String school_name = null;
-//	private String date = null;
-//	private String book_genre = null;
-//
-
 
 }
