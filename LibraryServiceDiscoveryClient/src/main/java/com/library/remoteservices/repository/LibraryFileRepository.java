@@ -1,17 +1,9 @@
 package com.library.remoteservices.repository;
 
-import java.io.File;
 import java.util.Arrays;
-import java.util.Optional;
-
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Response.ResponseBuilder;
-
-import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -25,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.library.service.LibraryFileRepoService;
-import com.netflix.ribbon.http.HttpRequestBuilder;
 
 public class LibraryFileRepository implements LibraryFileRepoService {
 	@Autowired
