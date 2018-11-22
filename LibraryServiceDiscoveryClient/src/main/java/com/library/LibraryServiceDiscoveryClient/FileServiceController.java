@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.library.service.LibraryFileRepoService;
 
+@CrossOrigin(origins="*",allowedHeaders="*")
 @RestController
 @RequestMapping("/library/fileOps")
 public class FileServiceController {
@@ -40,7 +42,7 @@ public class FileServiceController {
 		return fileService.downloadFile(path, fileId, httpServletRequest);
 	}
 
-	@PostMapping("/setupInstitution")
+	@PostMapping("/setup")
 	public boolean setupRepositoryForUniversity(@RequestParam(value = "name") String name) {
 		return fileService.setupInstitutionRepository(name);
 	}

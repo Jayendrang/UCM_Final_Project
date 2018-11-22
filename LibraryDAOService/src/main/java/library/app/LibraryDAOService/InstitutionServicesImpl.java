@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -20,6 +21,7 @@ import library.app.services.InstitutionServices;
 import library.app.utilities.AppConstants;
 import library.app.utilities.UniqueIdGenerator;
 
+@CrossOrigin(origins="*",allowedHeaders="*")
 @RestController
 @RequestMapping("/library/school")
 public class InstitutionServicesImpl {

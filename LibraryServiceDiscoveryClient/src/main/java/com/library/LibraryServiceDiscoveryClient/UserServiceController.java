@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.library.pojo.User_Info;
 
+@CrossOrigin(origins="*",allowedHeaders="*")
 @RestController 
 @RequestMapping("/library/user")
 public class UserServiceController {
@@ -46,7 +48,7 @@ public class UserServiceController {
 		return userService.getAllUserDetails(role);
 	}
 
-	@GetMapping("/retrieverQuestions")
+	@GetMapping("/getRecoveryQuestions")
 	public User_Info getRecoveryQuestions(@RequestParam(value="id") String id){
 		User_Info req = new User_Info();
 		req.setUser_id(id);

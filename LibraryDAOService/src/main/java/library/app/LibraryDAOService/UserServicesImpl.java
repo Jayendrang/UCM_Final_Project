@@ -8,6 +8,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +26,7 @@ import library.app.services.UserServices;
 import library.app.utilities.AppConstants;
 import library.app.utilities.UniqueIdGenerator;
 
+@CrossOrigin(origins="*",allowedHeaders="*")
 @RestController
 @RequestMapping("/library/user")
 public class UserServicesImpl {

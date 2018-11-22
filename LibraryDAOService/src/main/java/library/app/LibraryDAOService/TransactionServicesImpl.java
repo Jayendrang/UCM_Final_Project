@@ -8,6 +8,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +20,7 @@ import library.app.dao.model.StubClass;
 import library.app.dao.model.library_transactions;
 import library.app.services.BookTransactionService;
 
+@CrossOrigin(origins="*",allowedHeaders="*")
 @RestController
 @RequestMapping("/library/booktransactions")
 public class TransactionServicesImpl {
@@ -31,7 +33,7 @@ public class TransactionServicesImpl {
 	BookTransactionService transactionService;
 
 	@PostMapping("/save")
-	public ResponseEntity<?> saveTransaction(@Valid @RequestBody library_transactions trans) {
+	public ResponseEntity<library_transactions> saveTransaction(@Valid @RequestBody library_transactions trans) {
 		library_transactions trans1 = transactionService.save(trans);
 		if (!trans1.equals(null)) {
 			return ResponseEntity.ok().build();
@@ -50,7 +52,7 @@ public class TransactionServicesImpl {
 		return null;
 	}
 
-	@GetMapping("/getCount")
+	@GetMapping("/getCountByInstitution")
 	public StubClass getTransactionByInstitution(@RequestParam("institution_id") String institution_id)
 			throws NoSuchElementException {
 
@@ -67,7 +69,6 @@ public class TransactionServicesImpl {
 		String[] data = transactionService.getBooksGenresPerInstitution(institution_id);
 		List<StubClass> responseData = new ArrayList<>();
 		for(String array:data) {
-			System.err.println(array);
 			String[] values = array.split(",");
 			StubClass keyval = new StubClass();
 			keyval.setKey(values[0]);

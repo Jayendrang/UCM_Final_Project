@@ -14,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,8 +36,9 @@ import library.app.services.InstitutionServices;
 import library.app.utilities.AppConstants;
 import library.app.utilities.UniqueIdGenerator;
 
+@CrossOrigin(origins="*",allowedHeaders="*")
 @RestController
-@RequestMapping("/library/repository")
+@RequestMapping("/library/book")
 public class BookServicesImpl {
 
 	@Autowired
@@ -55,7 +57,7 @@ public class BookServicesImpl {
 
 	@SuppressWarnings("unchecked")
 	@GetMapping("/getbook")
-	public books_info getBooks(@RequestParam(value = "bookId") String bookId) throws Exception {
+	public books_info getBooks(@RequestParam(value = "bookid") String bookId) throws Exception {
 
 		books_info data = bookservices.findById(bookId)
 				.orElseThrow(() -> new BookExceptions("", "", "No Books found in repository"));
@@ -109,7 +111,7 @@ public class BookServicesImpl {
 			if (bookservices.existsById(inbooks)) {
 				System.err.println("BOOK DELETED :: END");
 				tcount = +bookservices.deleteBooks(inbooks);
-				;
+				
 			}
 		}
 

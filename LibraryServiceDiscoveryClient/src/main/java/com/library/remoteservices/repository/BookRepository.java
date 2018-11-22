@@ -14,19 +14,20 @@ public class BookRepository implements BookServices{
 	@Autowired
 	private RestTemplate restTemplate;
 	
-	protected final String userRemoteServiceURL = "http://LIBRARY-DAO-SERIVCE".concat("/library").concat("/repository");
-	private final String getBooks = userRemoteServiceURL.concat("/getbook");
-	private final String saveBooks = userRemoteServiceURL.concat("/savebooks");
-	private final String removebooks = userRemoteServiceURL.concat("/removebooks");
-	private final String updatebooks = userRemoteServiceURL.concat("/updatebooks");
-	private final String getBooksByInst = userRemoteServiceURL.concat("/getBooksByInstitute");
-	private final String getBooksByAuthor = userRemoteServiceURL.concat("/getBooksByAuthor");
-	private final String getBooksByTitle = userRemoteServiceURL.concat("/getBooksByTitle");
-	private final String getBooksGenreByInst = userRemoteServiceURL.concat("/getBooksCountByInstitution");
-	private final String getBooksCountGenre = userRemoteServiceURL.concat("/getAllBooksCountByGenre");
+	protected final String bookRemoteServiceURL = "http://LIBRARY-DAO-SERIVCE".concat("/library").concat("/book");
+	private final String getBooks = bookRemoteServiceURL.concat("/getbook");
+	private final String saveBooks = bookRemoteServiceURL.concat("/savebooks");
+	private final String removebooks = bookRemoteServiceURL.concat("/removebooks");
+	private final String updatebooks = bookRemoteServiceURL.concat("/updatebooks");
+	private final String getBooksByInst = bookRemoteServiceURL.concat("/getBooksByInstitute");
+	private final String getBooksByAuthor = bookRemoteServiceURL.concat("/getBooksByAuthor");
+	private final String getBooksByTitle = bookRemoteServiceURL.concat("/getBooksByTitle");
+	private final String getBooksGenreByInst = bookRemoteServiceURL.concat("/getBooksCountByInstitution");
+	private final String getBooksCountGenre = bookRemoteServiceURL.concat("/getAllBooksCountByGenre");
 	@Override
-	public BooksInfo getBooksById(String bookId) {
+	public BooksInfo getBooksById(String bookId) throws NullPointerException{
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getBooks).queryParam("bookid",bookId);
+		
 		return restTemplate.getForObject(builder.build().toUriString(), BooksInfo.class);
 	}
 	@Override
