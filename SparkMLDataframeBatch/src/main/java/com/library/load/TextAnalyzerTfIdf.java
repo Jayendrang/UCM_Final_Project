@@ -95,15 +95,12 @@ public class TextAnalyzerTfIdf {
 							functions.callUDF("tfidfcalc", dftable.col("df"), idftable.col("idf")).cast("float"))
 					.join(tftable, "words");
 
-		tf_idf_table.show();
+			tf_idf_table.show();
 			
 			tf_idf_table.createOrReplaceTempView("temp_prod");
 			sqlContext.sql("drop table if exists library_dataset.prod_library_data");
 			sqlContext.sql("create table if not exists library_dataset.prod_library_data as select * from temp_prod");
-		//	sqlContext.sql("insert into library_dataset.prod_library_data  select * from temp_prod"); 
-			
-		self.searchCorpus(tf_idf_table,"constructors");
-			
+			sqlContext.sql("insert into library_dataset.prod_library_data  select * from temp_prod"); 
 			
 			System.out.println("Corpus size(Total books)-->" + documentcount);
 			sparkSession.close();
@@ -115,7 +112,7 @@ public class TextAnalyzerTfIdf {
 	}
 	
 	public void searchCorpus(Dataset<Row> dataset, String searchString) {
-		Dataset<Row> rr = dataset.where(dataset.col("words").equalTo(searchString)).orderBy(dataset.col("count"));//.select(functions.sum(dataset.col("count")));
+		Dataset<Row> rr = dataset.where(dataset.col("words").equalTo(searchString)).orderBy(dataset.col("count"));
 				rr.show();
 		
 	}

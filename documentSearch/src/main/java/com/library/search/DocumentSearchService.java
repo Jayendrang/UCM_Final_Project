@@ -1,6 +1,7 @@
 package com.library.search;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +14,15 @@ public class DocumentSearchService {
 
 	@Autowired
 	SearchResultPojo resultdata;
-	
+
+	@Autowired
+	SearchCorpus searchCorpus;
+
 	@RequestMapping("/library/search")
-	public List<SearchResultPojo> getSearchResult(@RequestParam (value="keywords") List<String> data) throws SQLException{
-		SparkDAO dao  = new SparkDAO();
-		return dao.getData(data);
+	public HashMap<String, List<SearchResultPojo>> getSearchResult(@RequestParam(value = "keywords") List<String> data)
+			throws SQLException {
+
+		return searchCorpus.searchInCorpus(data);
 	}
-	
+
 }

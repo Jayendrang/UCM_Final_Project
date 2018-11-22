@@ -1,0 +1,21 @@
+# Discovery Server Access
+spring:
+  application:
+    name: library-text-search
+server:
+  port: 8097
+
+eureka:
+    instance:
+      prefer-ip-address: false 
+      hostname: localhost
+    client:
+      serviceUrl:
+        defaultZone: http://localhost:8090/eureka/
+        register-with-eureka: false
+      fetch-registry: false
+hive: 
+  database: library_dataset
+  username: hive_user
+  password: hive_password
+  dbconnection: jdbc:hive2://localhost:10000/

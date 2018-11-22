@@ -20,6 +20,7 @@ import org.apache.pdfbox.tools.imageio.ImageIOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,7 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import library.fileConfig.FileStorageProperty;
 import library.fileException.RepoStorageException;
 
-@Service
+@Component
 public class RepoFileStorageService {
 
 	private Path uriLocation;

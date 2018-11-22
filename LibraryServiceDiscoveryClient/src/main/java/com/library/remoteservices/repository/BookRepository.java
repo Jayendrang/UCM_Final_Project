@@ -60,7 +60,6 @@ public class BookRepository implements BookServices{
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getBooksByTitle).queryParam("title", title);
 		return restTemplate.getForObject(builder.build().toUriString(), List.class);
 	}
-		
 	
 	@Override
 	public List<StubClass> getBooksCountByGenreInstitution(String instituteId) {

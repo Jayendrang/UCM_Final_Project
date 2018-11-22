@@ -4,15 +4,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SearchResultPojo {
-	private String words,bookid,tf_idf;
-
-	public String getWords() {
-		return words;
-	}
-
-	public void setWords(String words) {
-		this.words = words;
-	}
+	private String bookid,tf_idf;
 
 	public String getBookid() {
 		return bookid;

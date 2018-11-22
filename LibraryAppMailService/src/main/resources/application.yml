@@ -1,0 +1,10 @@
+# Discovery Server Access
+eureka:
+    instance:
+      prefer-ip-address: false 
+      hostname: localhost
+    client:
+      serviceUrl:
+        defaultZone: http://localhost:8090/eureka/
+        register-with-eureka: false
+      fetch-registry: false
