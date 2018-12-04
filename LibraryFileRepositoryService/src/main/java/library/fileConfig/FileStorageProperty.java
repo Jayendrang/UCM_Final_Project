@@ -2,7 +2,7 @@ package library.fileConfig;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix="file")
+//@ConfigurationProperties(prefix="file")
 public class FileStorageProperty {
 
 	private String uploadUriPath;

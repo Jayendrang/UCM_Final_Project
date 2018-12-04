@@ -33,4 +33,14 @@ public interface UserServices extends JpaRepository<user_profile, String> {
 	@Query(value="UPDATE user_profile pro SET pro.is_locked=?2 WHERE pro.user_id=?1")
 	public int updateProfile(String user_id,String is_locked);
 	
+	@Query(value="SELECT count(users.user_id) from user_profile users")
+	public int getAllUserCount();
+	
+	@Query(value="SELECT COUNT(users.user_id) from user_profile users where users.institution_id=?1")
+	public int getUserCountByInstitution(String inst_id);
+	
+	@Query(value="SELECT user.user_id,user.role,user.institution_id,user.institution_name,user.password,user.user_fname,user.user_lname, user.is_locked from "
+			+ "user_profile user WHERE user.user_id= ?1 and user.status='ACTIVE' ")
+	public user_profile validateUser(String userId);
+	
 }

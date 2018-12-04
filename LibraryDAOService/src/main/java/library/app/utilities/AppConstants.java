@@ -14,4 +14,6 @@ public class AppConstants {
 	static public String FILE_SERVICE_NAME="LIBRARY_FILE_SERVICE";
 	static public String FILE_BATCH_NEW="NEW";
 	static public String FILE_BATCH_COMPLETED="COMPLETED";
+	static public String BOOKS_STATUS_NEW="NEW";
+	static public String CLOUD_FRONT_INSTANCE="d3clkmghbmhnao.cloudfront.net";
 }

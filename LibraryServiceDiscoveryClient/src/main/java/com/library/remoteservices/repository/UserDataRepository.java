@@ -21,7 +21,7 @@ import org.springframework.web.util.UriComponents.UriTemplateVariables;
 import com.github.andrewoma.dexx.collection.Map;
 import com.google.common.collect.Lists;
 import com.library.pojo.StubClass;
-import com.library.pojo.User_Info;
+import com.library.pojo.user_profile;
 import com.library.service.UserSerivces;
 
 public class UserDataRepository implements UserSerivces {
@@ -39,43 +39,45 @@ public class UserDataRepository implements UserSerivces {
 	private final String searchByLastName = userRemoteServiceURL.concat("/getUserByLname");
 	private final String getUserById = userRemoteServiceURL.concat("/getUserById/");
 	private final String lockUnlockStatus = userRemoteServiceURL.concat("/profilestatus");
+	private final String totalCount = userRemoteServiceURL.concat("/count");
+	private final String countByInstituion = userRemoteServiceURL.concat("/countByInstitution");
 
 	@Override
-	public User_Info registerUser(User_Info data) {
+	public user_profile registerUser(user_profile data) {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(registerUser);
-		return restTemplate.postForObject(builder.build().toUriString(), data, User_Info.class);
+		return restTemplate.postForObject(builder.build().toUriString(), data, user_profile.class);
 	}
 
 	@Override
-	public User_Info updateProfile(User_Info data) {
+	public user_profile updateProfile(user_profile data) {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(updateUserProfile);
-		return restTemplate.postForObject(builder.build().toUriString(), data, User_Info.class);
+		return restTemplate.postForObject(builder.build().toUriString(), data, user_profile.class);
 	}
 
 	@Override
-	public boolean deactivateProfile(User_Info data) {
+	public boolean deactivateProfile(user_profile data) {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(deactivateProfile);
 		return restTemplate.postForObject(builder.build().toUriString(), data, boolean.class);
 	}
 
 	@Override
-	public User_Info getInviteId(String userId) {
-		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(referenceId).queryParam("userId",userId);
-		return restTemplate.getForObject(builder.build().toUriString(), User_Info.class);
+	public user_profile getInviteId(String userId) {
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(referenceId).queryParam("userId", userId);
+		return restTemplate.getForObject(builder.build().toUriString(), user_profile.class);
 	}
 
 	@Override
-	public User_Info getRecoveryQuestions(User_Info data) {
+	public user_profile getRecoveryQuestions(user_profile data) {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(RecoveryInfo);
-		return restTemplate.getForObject(builder.build().toUri(), User_Info.class);
+		return restTemplate.getForObject(builder.build().toUri(), user_profile.class);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<User_Info> getAllUserDetails(String role) throws NullPointerException {
+	public List<user_profile> getAllUserDetails(String role) throws NullPointerException {
 
-		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getAllUser).queryParam("role",role);
-		List<User_Info> response = null;
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getAllUser).queryParam("role", role);
+		List<user_profile> response = null;
 		try {
 			System.out.println(getAllUser);
 			response = restTemplate.getForObject(builder.build().toUriString(), List.class);
@@ -87,32 +89,44 @@ public class UserDataRepository implements UserSerivces {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<User_Info> searchUserInforByLastName(String lastName) {
-		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(searchByLastName).queryParam("lastName", lastName);
+	public List<user_profile> searchUserInforByLastName(String lastName) {
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(searchByLastName).queryParam("lastName",
+				lastName);
 		System.err.println(builder.build().toUri());
-		return (List<User_Info>) restTemplate.getForObject(builder.build().toUriString(), List.class);
+		return (List<user_profile>) restTemplate.getForObject(builder.build().toUriString(), List.class);
 	}
 
 	@Override
-	public User_Info getUserById(String userId) {
+	public user_profile getUserById(String userId) {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getUserById).queryParam("userId", userId);
 		System.err.println(builder.toUriString());
-		return restTemplate.getForObject(builder.build().toUriString(), User_Info.class);
+		return restTemplate.getForObject(builder.build().toUriString(), user_profile.class);
 	}
 
 	@Override
 	public boolean lockUnlockUserProfile(String isLocked, String id) {
-		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(lockUnlockStatus)
-				.queryParam("userId", id)
-				.queryParam("lockStatus",isLocked);
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(lockUnlockStatus).queryParam("userId", id)
+				.queryParam("lockStatus", isLocked);
 		System.err.println(builder.toUriString());
-		return restTemplate.postForObject(builder.build().toUriString(),null,boolean.class);
+		return restTemplate.postForObject(builder.build().toUriString(), null, boolean.class);
 	}
 
 	@Override
-	public User_Info validateUserCreds(User_Info data) {
+	public user_profile validateUserCreds(user_profile data) {
 
 		return null;
+	}
+
+	@Override
+	public StubClass getTotalCount() {
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(totalCount);
+		return restTemplate.getForObject(builder.build().toUriString(), StubClass.class);
+	}
+
+	@Override
+	public StubClass getUserCountByInstitution(String inst_id) {
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(countByInstituion).queryParam("institution_id",inst_id);
+		return restTemplate.getForObject(builder.build().toUriString(), StubClass.class);
 	}
 
 }

@@ -2,29 +2,29 @@ package com.library.pojo;
 
 import java.util.Date;
 
-
 public class BooksInfo {
-private String book_id;
-	
+	private String book_id;
+
 	private String book_name;
-	
+
 	private String book_isbn;
-	
+
 	private String book_genre;
-	
+
 	private String author;
-	
+
 	private String edition;
-	
+
 	private String user_id;
-	
+
 	private String institution_id;
-	
+
 	private String institution_name;
-	
+
 	private String repo_path;
-	
+
 	private Date created_date;
+
 	public String getBook_id() {
 		return book_id;
 	}
@@ -113,5 +113,4 @@ private String book_id;
 		this.created_date = created_date;
 	}
 
-	
 }

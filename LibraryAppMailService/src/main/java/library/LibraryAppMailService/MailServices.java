@@ -21,14 +21,16 @@ public class MailServices {
 	JavaMailSender mailSender;
 
 	@PostMapping("/sendmail")
-	public MailResponse sendMail(@RequestBody MailDetails mailData)throws IOException {
+	public MailResponse sendMail(@RequestBody MailDetails mailData) throws IOException {
 		try {
 			MimeMessage message = mailSender.createMimeMessage();
-			message.setContent(messageBody(mailData.getUsername(), mailData.getPassword()).toString(), "text/html");
-			MimeMessageHelper messageHelper = new MimeMessageHelper(message,false,"utf-8");
+			message.setContent(
+					messageBody(mailData.getUsername(), mailData.getPassword(), mailData.getRole()).toString(),
+					"text/html");
+			MimeMessageHelper messageHelper = new MimeMessageHelper(message, false, "utf-8");
 			messageHelper.setTo(mailData.getReciever());
 			messageHelper.setSubject("KMax Librarian account activated!");
-			
+
 			mailSender.send(message);
 			return new MailResponse(mailData.getReciever(), "Successfully");
 		} catch (Exception ex) {
@@ -37,18 +39,25 @@ public class MailServices {
 		return new MailResponse(mailData.getReciever(), "Failed");
 	}
 
-	
-	public String messageBody(String username,String password) {
+	public String messageBody(String username, String password, String role) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("<html>");
 		builder.append("<h3>Welcome,</h3>");
-		builder.append("<p> Your librarian account was created successfully. Please use the below credentials to login to KMax portal. Also, reset your password with 24 hours before your account gets locked.</p>");
-		builder.append("<h4>Username :</h4>  "+username);
-		builder.append("<h4>Password :</h4>\n"+password);
-		builder.append("<p>Thanks and regards,</p>\n" + 
-				"\n" + 
-				"<h3> Team KMax </h3> \n" + 
-				"</html>");
+		if (role.equalsIgnoreCase("GN")) {
+			builder.append(
+					"<p> Your user account was created successfully. Please use the below credentials to login to KMax portal. Also, reset your password with 24 hours before your account gets locked.</p>");
+		} else if (role.equalsIgnoreCase("LIB")) {
+			builder.append(
+					"<p> Your librarian account was created successfully. Please use the below credentials to login to KMax portal. Also, reset your password with 24 hours before your account gets locked.</p>");
+
+		} else if (role.equalsIgnoreCase("ADM")) {
+			builder.append(
+					"<p> Your administrator account was created successfully. Please use the below credentials to login to KMax portal. Also, reset your password with 24 hours before your account gets locked.</p>");
+
+		}
+		builder.append("<h4>Username :</h4>  " + username);
+		builder.append("<h4>Password :</h4>\n" + password);
+		builder.append("<p>Thanks and regards,</p>\n" + "\n" + "<h3> Team KMax </h3> \n" + "</html>");
 		return builder.toString();
 	}
 }

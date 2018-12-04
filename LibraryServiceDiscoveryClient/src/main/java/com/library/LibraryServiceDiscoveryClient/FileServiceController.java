@@ -9,8 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,13 +27,11 @@ public class FileServiceController {
 	LibraryFileRepoService fileService;
 
 	@PostMapping("/upload")
-	public String uploadBooks(@RequestParam(value = "file") MultipartFile file,
-			@RequestParam(value = "instRepo") String institutionRepo, @RequestParam(value = "fileId") String fileName) {
-		if(fileService.uploadBooks(file, institutionRepo, fileName)) {
-			return "SUCCESS";
-		}else {
-			return "FAILED";
-		}
+	public String uploadBooks(@RequestPart(required=true) MultipartFile file,
+			@RequestParam(value = "repo") String institutionRepo, @RequestParam(value = "filename") String fileName) {
+		
+		
+		return fileService.uploadBooks(file, institutionRepo, fileName);
 
 	}
 
@@ -43,7 +43,7 @@ public class FileServiceController {
 	}
 
 	@PostMapping("/setup")
-	public boolean setupRepositoryForUniversity(@RequestParam(value = "name") String name) {
+	public String setupRepositoryForUniversity(@RequestParam(value = "name") String name) {
 		return fileService.setupInstitutionRepository(name);
 	}
 }

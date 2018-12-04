@@ -12,7 +12,7 @@ import library.fileConfig.FileStorageProperty;
 @SpringBootApplication
 @ComponentScan("library")
 @EnableEurekaClient
-@EnableConfigurationProperties({FileStorageProperty.class})
+//@EnableConfigurationProperties({FileStorageProperty.class})
 public class LibraryFileRepositoryServiceApplication {
 
 	public static void main(String[] args) {

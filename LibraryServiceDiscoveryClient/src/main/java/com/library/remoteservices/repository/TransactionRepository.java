@@ -1,5 +1,6 @@
 package com.library.remoteservices.repository;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.ws.rs.core.Response;
@@ -19,12 +20,13 @@ public class TransactionRepository implements LibraryTransactionService {
 	private RestTemplate restTemplate;
 
 	protected final String transactionRemoteServiceURL = "http://LIBRARY-DAO-SERIVCE".concat("/library")
-			.concat("/booktransactions");
+			.concat("/transactions");
 	private final String saveTransaction = transactionRemoteServiceURL.concat("/save");
 	private final String getAllTransctionById = transactionRemoteServiceURL.concat("/get");
 	private final String getStatsTransactionByInstitution = transactionRemoteServiceURL
 			.concat("/getCountByInstitution");
 	private final String getStatsTransactionByGenre = transactionRemoteServiceURL.concat("/getAllByGenre");
+	private final String getStatsTransactionVolume = transactionRemoteServiceURL.concat("/getVolumeByDate");
 
 	@Override
 	public Transactions saveLibraryTransaction(Transactions trans) {
@@ -34,6 +36,7 @@ public class TransactionRepository implements LibraryTransactionService {
 		return response.getBody();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Transactions> getAllTransaction(String userId) {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getAllTransctionById).queryParam("user_id",
@@ -48,10 +51,19 @@ public class TransactionRepository implements LibraryTransactionService {
 				.queryParam("institution_id", institutionId).build().toUriString(), StubClass.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<StubClass> getTransactionByGenre(String institutionId) {
-		return restTemplate.getForObject(UriComponentsBuilder.fromUriString(getStatsTransactionByGenre).queryParam("institution_id", institutionId).build().toUriString()
-				, List.class);
+		return restTemplate.getForObject(UriComponentsBuilder.fromUriString(getStatsTransactionByGenre)
+				.queryParam("institution_id", institutionId).build().toUriString(), List.class);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<StubClass> getTransactionByVolume(String institutionId) {
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getStatsTransactionVolume)
+				.queryParam("institution_id", institutionId);
+		return (List<StubClass>) restTemplate.getForObject(builder.build().toUriString(), List.class);
 	}
 
 }

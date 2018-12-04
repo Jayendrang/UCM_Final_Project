@@ -14,7 +14,7 @@ import library.daoservice.SearchCorpus;
 import library.pojo.HiveConnectionProperties;
 
 @CrossOrigin(origins="*",allowedHeaders="*")
-@RestController
+@RestController("/library")
 public class DocumentSearchService {
 
 	@Autowired
@@ -23,8 +23,8 @@ public class DocumentSearchService {
 	@Autowired
 	SearchCorpus searchCorpus;
 
-	@RequestMapping("/library/search")
-	public HashMap<String, List<library.pojo.SearchResultPojo>> getSearchResult(@RequestParam(value = "keywords") List<String> data)
+	@RequestMapping("/textsearch")
+	public List<library.pojo.SearchResultPojo> getSearchResult(@RequestParam(value = "keywords") List<String> data)
 			throws SQLException {
 
 		return searchCorpus.searchInCorpus(data);

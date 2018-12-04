@@ -18,7 +18,7 @@ public class Transactions {
 
 	private BooksInfo books;
 
-	private User_Info profile;
+	private user_profile profile;
 
 	private String institution_id;
 
@@ -70,11 +70,11 @@ public class Transactions {
 		this.books = books;
 	}
 
-	public User_Info getProfile() {
+	public user_profile getProfile() {
 		return profile;
 	}
 
-	public void setProfile(User_Info profile) {
+	public void setProfile(user_profile profile) {
 		this.profile = profile;
 	}
 

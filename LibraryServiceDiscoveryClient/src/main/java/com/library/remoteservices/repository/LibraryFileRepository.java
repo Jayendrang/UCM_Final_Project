@@ -2,8 +2,8 @@ package com.library.remoteservices.repository;
 
 import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -30,43 +30,37 @@ public class LibraryFileRepository implements LibraryFileRepoService {
 
 	
 
-	private final String fileService = discoveryServiceName.concat("/repo").concat("/fileOps");
-	private final String setupInstitution = fileService.concat("/setupfolder");
-	private final String uploadBooks = fileService.concat("/uploadFile");
-	private final String downloadBooks = fileService.concat("/downloadFile");
+	private final String fileService = discoveryServiceName.concat("/repo").concat("/cloud/");
+	private final String setupInstitution = fileService.concat("create");
+	private final String uploadBooks = fileService.concat("upload");
+	private final String removeBooks = fileService.concat("remove");
 
 	@Override
-	public boolean setupInstitutionRepository(String institutionName) {
+	public String setupInstitutionRepository(String institutionName) {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(setupInstitution).queryParam("name",
 				institutionName);
-		return restTemplate.postForObject(builder.build().toUriString(), null, Boolean.class);
+		return restTemplate.postForObject(builder.build().toUriString(), null, String.class);
 	}
 
 	@Override
-	public boolean uploadBooks(MultipartFile file, String fileLocation, String fileName) {
-		boolean callResponse = false;
+	public String uploadBooks(MultipartFile file, String fileLocation, String fileName) {
+		String callResponse = "";
 		try {
 			if(!file.isEmpty()) {
-				ByteArrayResource fileResource = new ByteArrayResource(file.getBytes()) {
-					public String getFileName() {
-						return file.getOriginalFilename();
-					}
-				};
-			LinkedMultiValueMap<String, Object> requestMap = new LinkedMultiValueMap<>();
-			//FileSystemResource localResource = new FileSystemResource(file.getResource().getFile().getAbsolutePath());
-			requestMap.add("file", fileResource);
-			requestMap.add("repoLocation", fileLocation);
-			requestMap.add("fileId", fileName);
+			org.springframework.util.MultiValueMap<String,Object> requestMap = new LinkedMultiValueMap<String,Object>();
+			requestMap.add("file", file.getResource());
+			requestMap.add("path", fileLocation);
+			requestMap.add("name", fileName);
 			
 			HttpHeaders requestHeader = new HttpHeaders();
 			requestHeader.setContentType(MediaType.MULTIPART_FORM_DATA);
-			HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<LinkedMultiValueMap<String, Object>>(
+			HttpEntity<org.springframework.util.MultiValueMap<String, Object>> requestEntity = new HttpEntity<org.springframework.util.MultiValueMap<String, Object>>(
 					requestMap, requestHeader);
 			System.err.println(requestEntity.getBody());
 			System.err.println(uploadBooks);
-			ResponseEntity<String> response = restTemplate.exchange(uploadBooks,HttpMethod.POST, requestEntity,
-					String.class);
-			System.err.println("response from EndPoint---->"+response.getBody());
+			callResponse = restTemplate.postForObject(uploadBooks, requestEntity, String.class);
+			//(uploadBooks,HttpMethod.POST, requestEntity,String.class);
+			
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -75,6 +69,8 @@ public class LibraryFileRepository implements LibraryFileRepoService {
 		return callResponse;
 	}
 
+	
+	//removed and configured to CDN
 	@Override
 	public ResponseEntity<Resource> downloadFile(String serverPath, String fileName, HttpServletRequest postRequest) {
 		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
@@ -82,7 +78,7 @@ public class LibraryFileRepository implements LibraryFileRepoService {
 
 		responseHeader.setAccept(Arrays.asList(MediaType.APPLICATION_OCTET_STREAM));
 		HttpEntity<String> responseEntity = new HttpEntity<>(responseHeader);
-		UriComponentsBuilder requestUri = UriComponentsBuilder.fromUriString(downloadBooks)
+		UriComponentsBuilder requestUri = UriComponentsBuilder.fromUriString(removeBooks)
 				.queryParam("repo", serverPath).queryParam("fileId", fileName);
 		ResponseEntity<Resource> responseData = restTemplate.exchange(requestUri.build().toUriString(), HttpMethod.GET,
 				responseEntity, Resource.class);
@@ -91,4 +87,9 @@ public class LibraryFileRepository implements LibraryFileRepoService {
 
 	}
 
+	@Override
+	public String removeBook(String path, String fileName) {
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(removeBooks).queryParam("path",path).queryParam("name",fileName);
+		return restTemplate.postForObject(builder.build().toUriString(), null, String.class);
+	}
 }

@@ -23,14 +23,17 @@ public class SparkDAO implements SearchCorpus {
 	private static String hive_password = "hive_password";
 	private static String driverName = "org.apache.hive.jdbc.HiveDriver";
 	private static String database = "library_dataset";
-	
+
+	@Autowired
+	HiveConnectionProperties hiveConnectionProperties;
+
 	public SparkDAO() {
 	}
-	
-	public HashMap<String, List<SearchResultPojo>> searchInCorpus(List<String> input) throws SQLException {
-		// TODO Auto-generated method stub
-		HashMap<String, List<SearchResultPojo>> response = new HashMap<>();
 
+	public List<SearchResultPojo> searchInCorpus(List<String> input) throws SQLException {
+
+		HashMap<String, SearchResultPojo> filterData = new HashMap<>();
+		List<SearchResultPojo> response = null;
 		try {
 			System.err.println("Hive Query::Started");
 			Class.forName(driverName);
@@ -38,8 +41,9 @@ public class SparkDAO implements SearchCorpus {
 			HiveConnection hcon = (HiveConnection) DriverManager.getConnection(hive_connection + database,
 					hive_username, hive_password);
 
+			System.err.println("HIVE APP ::" + hiveConnectionProperties.getDbconnection());
+
 			for (String keyword : input) {
-				// HashMap<String, SearchResultPojo> collect = new HashMap<>();
 				List<SearchResultPojo> collect = new ArrayList<>();
 				System.err.println("Search Keyword::: " + keyword);
 				HiveStatement hstmt = (HiveStatement) hcon.createStatement();
@@ -51,18 +55,16 @@ public class SparkDAO implements SearchCorpus {
 					SearchResultPojo uData = new SearchResultPojo();
 					uData.setBookid(rSet.getString("bookid"));
 					uData.setTf_idf(rSet.getString("tf_idf"));
-					collect.add(uData);
+					filterData.put(uData.getBookid(), uData);
 				}
-				for (SearchResultPojo data : collect) {
-
-				}
-				response.put(keyword, collect);
-
+			}
+			if (!filterData.isEmpty()) {
+				response = new ArrayList<SearchResultPojo>(filterData.values());
 			}
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.exit(1);
+
 		}
 		System.out.println("Running::Hive Completed");
 

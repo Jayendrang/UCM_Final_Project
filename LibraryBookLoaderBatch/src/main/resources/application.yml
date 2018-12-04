@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: book-loader-batch
+  datasource:
+    url: jdbc:mysql://localhost:3306/library_management_sys?useSSL=false
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+    
+awsProperties:
+   s3endpoint: https://s3.us-east-1.amazonaws.com
+   accesskey:  AKIAJ7KEM4HHZE55MJ5Q
+   secretkey: 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
+   bucketname: kmaxfilerepo 
+
+hadoopProperties:
+   hdfspath:  /user/library/data
+   resourcemanager: hdfs://localhost:9000
+   localcovertedpath: /home/jayendrang/Data/Converted
+   localdownloadpath: /home/jayendrang/Data/Download
+   coresitepath:  /home/jayendrang/hadoop3/hadoop-3.1.0/etc/hadoop/core-site.xml
+   hdfssitepath:  /home/jayendrang/hadoop3/hadoop-3.1.0/etc/hadoop/hdfs-site.xml

@@ -1,18 +1,22 @@
 package library.pojo;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 
-@Configuration
-@ConfigurationProperties(prefix="hive")
-@EnableConfigurationProperties
+@Component
 public class HiveConnectionProperties {
 
+	@Value("${hive.dbconnection}")
 	private String dbconnection;
+	
+	@Value("${hive.username}")
 	private String username;
+	
+	@Value("${hive.password}")
 	private String password;
+	
+	@Value("${hive.database}")
 	private String database;
 
 	public HiveConnectionProperties() {

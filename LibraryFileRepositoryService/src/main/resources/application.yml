@@ -8,3 +8,10 @@ eureka:
         defaultZone: http://localhost:8090/eureka/
         register-with-eureka: false
       fetch-registry: false
+
+awsProperties:
+   s3endpoint: https://s3.us-east-1.amazonaws.com
+   accesskey:  AKIAJ7KEM4HHZE55MJ5Q
+   secretkey: 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
+   bucketname: kmaxfilerepo
+   

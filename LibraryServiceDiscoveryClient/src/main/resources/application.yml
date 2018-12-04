@@ -3,9 +3,14 @@
 spring:
   application:
     name: library-service-consumer
- # mvc:
-   # view:
-   #   prefix: /WEB-INF/views/
+#File upload properties
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 10KB
+      max-file-size:  100MB
+      max-request-size: 200MB
+      
     #  suffix: .jsp
 
 # Discovery Server Access

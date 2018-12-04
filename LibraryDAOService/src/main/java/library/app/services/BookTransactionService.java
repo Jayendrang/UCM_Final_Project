@@ -1,5 +1,6 @@
 package library.app.services;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,5 +22,12 @@ public interface BookTransactionService extends JpaRepository<library_transactio
 
 	@Query("select distinct(book_genre),count(institution_name) from books_info where institution_id=?1 group by book_genre ")
 	public String[] getBooksGenresPerInstitution(String inst_id);
+	
+	@Query("select count(trans.transaction_id) from library_transactions trans where trans.transaction_date between ?1 and ?2 ")
+	public int getTransactionVolumeByWeek(Date start,Date end);
+	
+	@Query("select count(trans.transaction_id) from library_transactions trans where trans.transaction_date between ?1 and ?2 and trans.institution_id = ?3 ")
+	public int getTransactionVolumeByWeekForInstitution(Date start, Date end,  String insti_id);
+
 	
 }

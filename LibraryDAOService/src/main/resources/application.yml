@@ -7,6 +7,12 @@ spring:
     password: root
   application:
     name: library-dao
+  session:
+    store-type: jdbc
+    timeout: 600
+    jdbc:
+      initialize-schema: always
+      
   
 # Discovery Server Access
 eureka:
@@ -22,8 +28,10 @@ eureka:
 # HTTP Server (Tomcat) Port
 server: 
   port: 8092
-
+cloudfront:
+  repoLink: d3clkmghbmhnao.cloudfront.net
 # Disable Spring Boot's "Whitelabel" default error page, so we can use our own
 error:
   whitelabel:
     enabled: false
+

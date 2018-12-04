@@ -2,7 +2,7 @@ package com.library.pojo;
 
 import java.util.Date;
 
-public class User_Info {
+public class user_profile {
 
 	private String user_id;
 

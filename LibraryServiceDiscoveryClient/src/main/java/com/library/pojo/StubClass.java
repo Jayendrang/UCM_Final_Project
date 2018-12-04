@@ -1,6 +1,11 @@
 package com.library.pojo;
 
-public class StubClass {
+import java.io.Serializable;
+
+public class StubClass implements Serializable{
+	
+	private static final long serialVersionUID = -5093129613075256137L;
+	
 	private String key,value;
 
 	public String getKey() {

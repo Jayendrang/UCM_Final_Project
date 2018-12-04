@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.library.pojo.User_Info;
+import com.library.pojo.StubClass;
+import com.library.pojo.user_profile;
 
 @CrossOrigin(origins="*",allowedHeaders="*")
 @RestController 
@@ -24,17 +25,17 @@ public class UserServiceController {
 	com.library.service.UserSerivces userService;
 	
 	@PostMapping("/register")
-	public User_Info addNewUser(@Valid @RequestBody User_Info data) {
+	public user_profile addNewUser( @RequestBody user_profile data) {
 		return userService.registerUser(data);
 	}
 	
 	@PostMapping("/modify")
-	public User_Info modifyUserInfo(@Valid @RequestBody User_Info data) {
+	public user_profile modifyUserInfo( @RequestBody user_profile data) {
 		return userService.updateProfile(data);
 	}
 	
 	@PostMapping("/deactivateProfile")
-	public boolean deactivateProfile(@Valid @RequestBody User_Info data) {
+	public boolean deactivateProfile( @RequestBody user_profile data) {
 		return userService.deactivateProfile(data);
 	}
 	
@@ -44,19 +45,30 @@ public class UserServiceController {
 	}
 	
 	@GetMapping("/retrieveAllUser")
-	public List<User_Info> getAllUserInfo(@RequestParam(value="role")String role){
+	public List<user_profile> getAllUserInfo(@RequestParam(value="role")String role){
 		return userService.getAllUserDetails(role);
 	}
 
 	@GetMapping("/getRecoveryQuestions")
-	public User_Info getRecoveryQuestions(@RequestParam(value="id") String id){
-		User_Info req = new User_Info();
+	public user_profile getRecoveryQuestions(@RequestParam(value="id") String id){
+		user_profile req = new user_profile();
 		req.setUser_id(id);
 		return userService.getRecoveryQuestions(req);
 	}
 	
 	@GetMapping("/searchByLastname")
-	public List<User_Info> getUserByLastName(@RequestParam(value="lastname")String lname){
+	public List<user_profile> getUserByLastName(@RequestParam(value="lastname")String lname){
 		return userService.searchUserInforByLastName(lname);
 	}
+	
+	@GetMapping("/userCount")
+	public StubClass getTotalCount() {
+		return userService.getTotalCount();
+	}
+	
+	@GetMapping("/userCountByInstitution")
+	public StubClass getTotalCountInstitution(@RequestParam(value="institution_id")String inst_id) {
+		return userService.getUserCountByInstitution(inst_id);
+	}
+	
 }

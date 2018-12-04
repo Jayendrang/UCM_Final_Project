@@ -17,6 +17,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import library.app.utilities.AppConstants;
+
 @Entity
 @Table(name = "books_info")
 @EntityListeners(AuditingEntityListener.class)
@@ -77,9 +79,11 @@ public class books_info implements Serializable {
 	@Temporal(TemporalType.DATE)
 	@CreatedDate
 	private Date created_date;
+	
+	private String status=null;
 
 	public String getRepo_path() {
-		return repo_path;
+		return AppConstants.CLOUD_FRONT_INSTANCE.concat("/").concat(repo_path);
 	}
 
 	public void setRepo_path(String repo_path) {
@@ -95,7 +99,7 @@ public class books_info implements Serializable {
 	}
 
 	public String getBook_cover_path() {
-		return book_cover_path;
+		return AppConstants.CLOUD_FRONT_INSTANCE.concat("/").concat(book_cover_path);
 	}
 
 	public void setBook_cover_path(String book_cover_path) {
@@ -172,6 +176,18 @@ public class books_info implements Serializable {
 
 	public void setCreated_date(Date created_date) {
 		this.created_date = created_date;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 }

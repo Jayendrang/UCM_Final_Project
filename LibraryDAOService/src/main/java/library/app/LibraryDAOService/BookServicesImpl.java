@@ -1,19 +1,14 @@
 package library.app.LibraryDAOService;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import javax.validation.Valid;
-import javax.ws.rs.core.MultivaluedMap;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,9 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.UriComponentsBuilder;
-
 import library.app.dao.model.StubClass;
 import library.app.dao.model.books_info;
 import library.app.dao.model.file_logger;
@@ -36,7 +28,7 @@ import library.app.services.InstitutionServices;
 import library.app.utilities.AppConstants;
 import library.app.utilities.UniqueIdGenerator;
 
-@CrossOrigin(origins="*",allowedHeaders="*")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/library/book")
 public class BookServicesImpl {
@@ -57,12 +49,13 @@ public class BookServicesImpl {
 
 	@SuppressWarnings("unchecked")
 	@GetMapping("/getbook")
-	public books_info getBooks(@RequestParam(value = "bookid") String bookId) throws Exception {
-
-		books_info data = bookservices.findById(bookId)
-				.orElseThrow(() -> new BookExceptions("", "", "No Books found in repository"));
-		System.err.println(data.getBook_name());
-		if (data != null) {
+	public List<books_info> getBooks(@RequestParam(value = "bookid") String[] bookId) throws Exception {
+		
+		Iterable<String> searchStrings = Arrays.asList(bookId);
+		List<books_info> data = bookservices.findAllById(searchStrings);
+		
+		if (!data.isEmpty()) {
+	
 			return data;
 		}
 		return null;
@@ -71,33 +64,41 @@ public class BookServicesImpl {
 	// save list of books from by institution id
 
 	@PostMapping("/savebooks")
-	public List<String> uploadBooks(@Valid @RequestBody List<books_info> books,
-			@RequestParam(value = "institution_id") String institutionId) throws Exception {
+	public StubClass uploadBooks(@RequestBody books_info books) throws Exception {
 
-		List<String> callresponse = new ArrayList<>();
-		Optional<institution_info> institute_info = institutionservices.findById(institutionId);
-
+		Optional<institution_info> institute_info = institutionservices.findById(books.getInstitution_id());
+		StubClass response = new StubClass();
 		if (institute_info.isPresent()) {
-			for (books_info books1 : books) {
-				books1.setBook_id(UniqueIdGenerator.getRandomBookID());
-				books1.setInstitution_name(institute_info.get().getInstitution_name());
+			
+
+				// book repository
+				books.setBook_id(UniqueIdGenerator.getRandomBookID());
+				books.setInstitution_name(institute_info.get().getInstitution_name());
 				String tBookRepoPath = institute_info.get().getServer_repo_path().concat("/")
-						.concat(books1.getBook_id());
-				books1.setRepo_path(tBookRepoPath);
-				books1.setBook_cover_path(institute_info.get().getServer_repo_path().concat("/thumbnails/")
-						.concat(books1.getBook_id().concat(".png")));
-				books_info book = bookservices.save(books1);
+						.concat(books.getBook_id());
+				books.setRepo_path(tBookRepoPath.concat(".pdf"));
+				books.setBook_cover_path(institute_info.get().getServer_repo_path().concat("/thumbnails/")
+						.concat(books.getBook_id().concat(".png")));
+				books.setStatus(AppConstants.BOOKS_STATUS_NEW);
+				books_info book = bookservices.save(books);
+				
+				// file logger
 				file_logger action = new file_logger();
-				action.setBook_id(books1.getBook_id());
-				action.setRepo_path(books1.getRepo_path());
+				action.setBook_id(books.getBook_id());
+				action.setRepo_path(tBookRepoPath);
 				action.setStatus(AppConstants.FILE_BATCH_NEW);
 				file_logger logger = fileLoggerService.save(action);
+			
+				//response object
 				if ((!book.equals(null)) && (!logger.equals(null))) {
-					callresponse.add("SUCCESS");
+					StubClass responseObject = new StubClass();
+					responseObject.setKey(books.getBook_id());
+					responseObject.setValue(institute_info.get().getServer_repo_path());
+					response=responseObject;
 				}
-			}
+			
 		}
-		return callresponse;
+		return response;
 	}
 
 	// delete list of books from by institution id
@@ -111,7 +112,7 @@ public class BookServicesImpl {
 			if (bookservices.existsById(inbooks)) {
 				System.err.println("BOOK DELETED :: END");
 				tcount = +bookservices.deleteBooks(inbooks);
-				
+
 			}
 		}
 
@@ -121,23 +122,21 @@ public class BookServicesImpl {
 	// update books info from by institution id
 
 	@PostMapping("/updatebooks")
-	public List<books_info> updateBooksInfo(@Valid @RequestBody List<books_info> books) throws Exception {
-		List<books_info> response = new ArrayList<>();
-		for (books_info inbooks : books) {
-			books_info tbooks = bookservices.findById(inbooks.getBook_id())
-					.orElseThrow(() -> new BookExceptions(inbooks.getBook_name(), inbooks.getInstitution_name(),
-							inbooks.getRepo_path()));
-			if (!tbooks.getBook_id().isEmpty()) {
-				tbooks.setAuthor(inbooks.getAuthor());
-				tbooks.setBook_genre(inbooks.getBook_genre());
-				tbooks.setEdition(inbooks.getEdition());
-				tbooks.setBook_isbn(inbooks.getBook_isbn());
-				tbooks.setBook_name(inbooks.getBook_name());
-				response.add(bookservices.save(tbooks));
-			}
+	public books_info updateBooksInfo(@RequestBody books_info inbooks) throws Exception {
+
+		books_info tbooks = bookservices.findById(inbooks.getBook_id())
+				.orElseThrow(() -> new BookExceptions(inbooks.getBook_name(), inbooks.getInstitution_name(),
+						inbooks.getRepo_path()));
+		if (!tbooks.getBook_id().isEmpty()) {
+			tbooks.setAuthor(inbooks.getAuthor());
+			tbooks.setBook_genre(inbooks.getBook_genre());
+			tbooks.setEdition(inbooks.getEdition());
+			tbooks.setBook_isbn(inbooks.getBook_isbn());
+			tbooks.setBook_name(inbooks.getBook_name());
+			return bookservices.save(tbooks);
 		}
 
-		return response;
+		return inbooks;
 	}
 
 	// Retrieve all books by institution Id
@@ -149,14 +148,20 @@ public class BookServicesImpl {
 		if (books != null) {
 			return books;
 		}
-		return null;
+		return books;
 	}
 
 	// Retrieve books by author name
-	@GetMapping("/getBooksByAuthor")
-	public List<books_info> getBooksByAuthor(@RequestParam(value = "name") String name) throws Exception {
 
-		List<books_info> books_author = bookservices.getBooksByAuthor(name);
+	@GetMapping("/getBooksByAuthor")
+	public List<books_info> getBooksByAuthor(@RequestParam(value = "name") String name,
+			@RequestParam(value = "institution_id") String inst_id) throws Exception {
+		List<books_info> books_author = new ArrayList<books_info>();
+		if (inst_id.isEmpty() || inst_id.equals(null)) {
+			books_author = bookservices.getBooksByAuthor(name);
+		} else {
+			books_author = bookservices.getBooksByAuthorUser(name, inst_id);
+		}
 		if (books_author != null) {
 			return books_author;
 		}
@@ -164,17 +169,24 @@ public class BookServicesImpl {
 	}
 
 	// Retrieve books by book title
-	@GetMapping("/getBooksByTitle")
-	public List<books_info> getBooksByTitle(@RequestParam(value = "title") String title) throws Exception {
 
-		List<books_info> books_author = bookservices.getBooksByName(title);
-		if (books_author != null) {
-			return books_author;
+	@GetMapping("/getBooksByTitle")
+	public List<books_info> getBooksByTitle(@RequestParam(value = "title") String title,
+			@RequestParam(value = "institution_id") String inst_id) throws Exception {
+		List<books_info> books_title = new ArrayList<books_info>();
+		if (inst_id.isEmpty() || inst_id.equals(null)) {
+			books_title = bookservices.getBooksByTitle(title);
+		} else {
+			books_title = bookservices.getBooksByTitleUser(title, inst_id);
+		}
+		if (books_title != null) {
+			return books_title;
 		}
 		return null;
 	}
 
 	// Total books by genre
+
 	@GetMapping("/getBooksCountByInstitution")
 	public List<StubClass> getBooksCountByGenreInstitution(
 			@RequestParam(value = "institution_id") String institution_id) throws NoSuchElementException, Exception {
@@ -188,8 +200,10 @@ public class BookServicesImpl {
 			response.add(items);
 		}
 
-		return null;
+		return response;
 	}
+
+	// Get books count by genre
 
 	@GetMapping("/getAllBooksCountByGenre")
 	public List<StubClass> getBooksCountGenre() {
@@ -205,5 +219,27 @@ public class BookServicesImpl {
 		}
 		return response;
 	}
+
+	// Randombooks
+
+	@GetMapping("/getRandomBooks")
+	public List<books_info> getRandomBook() {
+		return bookservices.getRandomBooks(new PageRequest(0, 10));
+	}
+
+	// BooksbyGenre
+	@GetMapping("/getBooksByGenre")
+	public List<books_info> getBooksByGenre(@RequestParam(value = "genre") String genre,
+			@RequestParam(value = "institution_id") String inst_id) {
+		List<books_info> response = new ArrayList<>();
+		if (inst_id.isEmpty() || inst_id.equals(null)) {
+			response = bookservices.getBooksByGenre(genre);
+		} else {
+			response = bookservices.getBooksByGenreUser(genre, inst_id);
+		}
+		return response;
+	}
+	
+	
 
 }

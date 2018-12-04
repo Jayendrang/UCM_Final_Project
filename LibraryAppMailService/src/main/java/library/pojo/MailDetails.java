@@ -5,6 +5,7 @@ public class MailDetails {
 	private String reciever;
 	private String username;
 	private String password;
+	private String role;
 	
 	public MailDetails() {
 
@@ -38,6 +39,14 @@ public class MailDetails {
 
 	public void setReciever(String reciever) {
 		this.reciever = reciever;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
 	}
 
 }

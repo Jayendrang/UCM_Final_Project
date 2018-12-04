@@ -2,19 +2,33 @@ package com.library.service;
 
 import java.util.List;
 
-import com.library.pojo.User_Info;
+import com.library.pojo.StubClass;
+import com.library.pojo.user_profile;
 
 public interface UserSerivces {
-	
-	public User_Info registerUser(User_Info data);
-	public User_Info updateProfile(User_Info data);
-	public boolean deactivateProfile(User_Info data);
-	public boolean lockUnlockUserProfile(String isLocked,String id);
-	public User_Info getInviteId(String userId);
-	public User_Info getRecoveryQuestions(User_Info data);
-	public List<User_Info> getAllUserDetails(String role);
-	public List<User_Info> searchUserInforByLastName(String lastName);
-	public User_Info getUserById(String userId);
-	public User_Info validateUserCreds(User_Info data);
-	
+
+	public user_profile registerUser(user_profile data);
+
+	public user_profile updateProfile(user_profile data);
+
+	public boolean deactivateProfile(user_profile data);
+
+	public boolean lockUnlockUserProfile(String isLocked, String id);
+
+	public user_profile getInviteId(String userId);
+
+	public user_profile getRecoveryQuestions(user_profile data);
+
+	public List<user_profile> getAllUserDetails(String role);
+
+	public List<user_profile> searchUserInforByLastName(String lastName);
+
+	public user_profile getUserById(String userId);
+
+	public user_profile validateUserCreds(user_profile data);
+
+	public StubClass getTotalCount();
+
+	public StubClass getUserCountByInstitution(String inst_id);
+
 }

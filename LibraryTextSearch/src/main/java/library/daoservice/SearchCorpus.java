@@ -6,5 +6,5 @@ import java.util.List;
 
 
 public interface SearchCorpus {
-public HashMap<String, List<library.pojo.SearchResultPojo>> searchInCorpus(List<String> data) throws SQLException;
+public List<library.pojo.SearchResultPojo> searchInCorpus(List<String> data) throws SQLException;
 }
