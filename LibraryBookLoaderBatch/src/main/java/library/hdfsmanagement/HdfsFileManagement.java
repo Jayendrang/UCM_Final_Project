@@ -1,5 +1,6 @@
 package library.hdfsmanagement;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import java.util.List;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.assertj.core.util.Files;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +37,7 @@ public class HdfsFileManagement {
 			System.err.println(file.getCoverted_path()+"---"+hdfsProperties.getHdfsPath());
 			hadoopfs.copyFromLocalFile(new Path(file.getCoverted_path()), new Path(hdfsProperties.getResourceManagerAddress().concat(hdfsProperties.getHdfsPath())));
 			file.setStatus("COMPLETED");
+			Files.delete(new File(file.getCoverted_path()));
 			response.add(file);
 		}
 		return response;

@@ -1,6 +1,10 @@
 package com.library.remoteservices.repository;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -26,9 +30,11 @@ public class UserAuthenticationRepository implements LibraryUserAuthenticationSe
 	}
 
 	@Override
-	public String closeUserSession(HttpRequest request) {
-		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(validateLogin);
-		return restTemplate.postForObject(uriBuilder.build().toUriString(), request, String.class);
+	public Boolean closeUserSession(String request) {
+		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(closeSession);
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("JSESSIONID", request);
+		return restTemplate.postForObject(uriBuilder.build().toUriString(), new HttpEntity<String>(headers), Boolean.class);
 	}
 
 }

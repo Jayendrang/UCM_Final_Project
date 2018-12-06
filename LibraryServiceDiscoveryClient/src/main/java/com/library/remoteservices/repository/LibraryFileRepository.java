@@ -36,15 +36,15 @@ public class LibraryFileRepository implements LibraryFileRepoService {
 	private final String removeBooks = fileService.concat("remove");
 
 	@Override
-	public String setupInstitutionRepository(String institutionName) {
+	public boolean setupInstitutionRepository(String institutionName) {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(setupInstitution).queryParam("name",
 				institutionName);
-		return restTemplate.postForObject(builder.build().toUriString(), null, String.class);
+		return restTemplate.postForObject(builder.build().toUriString(), null, boolean.class);
 	}
 
 	@Override
-	public String uploadBooks(MultipartFile file, String fileLocation, String fileName) {
-		String callResponse = "";
+	public boolean uploadBooks(MultipartFile file, String fileLocation, String fileName) {
+		boolean callResponse = false;
 		try {
 			if(!file.isEmpty()) {
 			org.springframework.util.MultiValueMap<String,Object> requestMap = new LinkedMultiValueMap<String,Object>();
@@ -58,7 +58,7 @@ public class LibraryFileRepository implements LibraryFileRepoService {
 					requestMap, requestHeader);
 			System.err.println(requestEntity.getBody());
 			System.err.println(uploadBooks);
-			callResponse = restTemplate.postForObject(uploadBooks, requestEntity, String.class);
+			callResponse = restTemplate.postForObject(uploadBooks, requestEntity, boolean.class);
 			//(uploadBooks,HttpMethod.POST, requestEntity,String.class);
 			
 			}
@@ -88,8 +88,8 @@ public class LibraryFileRepository implements LibraryFileRepoService {
 	}
 
 	@Override
-	public String removeBook(String path, String fileName) {
+	public boolean removeBook(String path, String fileName) {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(removeBooks).queryParam("path",path).queryParam("name",fileName);
-		return restTemplate.postForObject(builder.build().toUriString(), null, String.class);
+		return restTemplate.postForObject(builder.build().toUriString(), null, boolean.class);
 	}
 }

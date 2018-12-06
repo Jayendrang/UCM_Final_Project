@@ -2,11 +2,14 @@ package library.hdfsmanagement;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.hadoop.fs.FileUtil;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.assertj.core.util.Files;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +33,7 @@ public class PdfToTextConverter {
 					new FileWriter(new File(convertedPath)));
 			downloadedfiles.setCoverted_path(convertedPath);
 			processedFilePath.add(downloadedfiles);
+			Files.delete(new File(downloadedfiles.getDownload_path()));
 			pdfDocumentObject.close();
 		}
 

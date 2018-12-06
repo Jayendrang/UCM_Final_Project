@@ -75,11 +75,12 @@ public class InstitutionServicesImpl {
 	public boolean updateInstitutionStatus(@RequestBody String requestBody) throws Exception {
 		JsonNode node = AppUtils.parseJson(requestBody);
 		int result = 0;
+		int bookresult=0;
 		if (node.get("status").textValue().equalsIgnoreCase("DEACTIVATE")) {
 			result = instiServices.updateInstitutionStatus("deactivated".toUpperCase(), node.get("userid").textValue(),
 					node.get("institutionid").textValue());
 			if (result > 0) {
-				result = bookservices.removeBooksFromRepo(node.get("institutionid").textValue());
+				bookresult = bookservices.removeBooksFromRepo(node.get("institutionid").textValue());
 			}
 		}
 		System.err.println(node.get("userid").textValue());
@@ -96,7 +97,7 @@ public class InstitutionServicesImpl {
 	public StubClass getInstitutionCount() {
 		StubClass response = new StubClass();
 		response.setKey("count");
-		response.setValue(String.valueOf(instiServices.totalInstitutionCount()));
+		response.setValue(String.valueOf(instiServices.totalInstitutionCount("ACTIVE")));
 		return response;
 	}
 }

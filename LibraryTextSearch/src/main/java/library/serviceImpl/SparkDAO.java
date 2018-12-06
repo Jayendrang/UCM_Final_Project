@@ -47,7 +47,7 @@ public class SparkDAO implements SearchCorpus {
 				List<SearchResultPojo> collect = new ArrayList<>();
 				System.err.println("Search Keyword::: " + keyword);
 				HiveStatement hstmt = (HiveStatement) hcon.createStatement();
-				String sql = "select bookid,tf_idf from prod_library_data where words='" + keyword + "'";
+				String sql = "select bookid,tf_idf from prod_library_data where words='" + keyword.toLowerCase() + "'";
 				HiveQueryResultSet rSet = (HiveQueryResultSet) hstmt.executeQuery(sql);
 				System.out.println("Running::Hive " + sql);
 

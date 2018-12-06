@@ -1,5 +1,6 @@
 package com.library.LibraryServiceDiscoveryClient;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.library.pojo.BooksInfo;
 import com.library.pojo.SearchResultPojo;
 import com.library.pojo.StubClass;
 import com.library.service.BookServices;
+import com.library.utils.AppUtils;
+import com.netflix.client.http.HttpRequest;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -24,9 +28,12 @@ public class BookServiceController {
 	@Autowired
 	BookServices bookservices;
 
-	@GetMapping("/getBook")
-	public List<BooksInfo> getBook(@RequestParam(value = "bookId") String bookid) {
-		return bookservices.getBooksById(bookid);
+	@PostMapping("/getBook")
+	public List<BooksInfo> getBook(@RequestBody List<String> bookid) throws Exception {
+		System.out.println("Book Id------->"+bookid);
+		String [] book_id_info = new String[bookid.size()];
+		book_id_info = bookid.toArray(book_id_info);
+		return bookservices.getBooksById(book_id_info);
 	}
 
 	@PostMapping("/save")
@@ -62,12 +69,12 @@ public class BookServiceController {
 	}
 
 	@PostMapping("/ModifyInfo")
-	public List<BooksInfo> modifyBookInfo(@RequestBody BooksInfo books) {
+	public BooksInfo modifyBookInfo(@RequestBody BooksInfo books) {
 		return bookservices.updateBooksInfo(books);
 	}
 
 	@PostMapping("/Remove")
-	protected boolean removeBook(@RequestParam(value = "bookId") List<String> bookids) {
+	protected boolean removeBook(@RequestParam(value = "bookId") String bookids) {
 		return bookservices.removeBooks(bookids);
 	}
 
@@ -78,12 +85,14 @@ public class BookServiceController {
 
 	@GetMapping("/ByGenre")
 	public List<BooksInfo> searchByGenre(@RequestParam(value = "genre") String bookGenre,
-			@RequestParam(value = "institution_id") String inst_id) {
+			@RequestParam(value = "institution_id") String inst_id, HttpRequest request) {
+		System.out.println(request.getHeaders().containsKey("JSESSIONID"));
+		
 		return bookservices.getBooksByGenre(bookGenre, inst_id);
 	}
 	
 	@GetMapping("/TextSearch")
-	public List<SearchResultPojo> searchByContent(@RequestParam(value="keywords") List<String> keywords){
+	public List<SearchResultPojo> searchByContent(@RequestParam(value="keywords") String keywords, @RequestParam("institution_id") String institutionid){
 		return bookservices.getTextSearch(keywords);
 	}
 }

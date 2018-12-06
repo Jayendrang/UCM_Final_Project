@@ -12,6 +12,7 @@ import com.library.remoteservices.repository.AppPropertiesRepository;
 import com.library.remoteservices.repository.BookRepository;
 import com.library.remoteservices.repository.InstitutionRepository;
 import com.library.remoteservices.repository.LibraryFileRepository;
+import com.library.remoteservices.repository.MailServiceRepository;
 import com.library.remoteservices.repository.TransactionRepository;
 import com.library.remoteservices.repository.UserAuthenticationRepository;
 import com.library.remoteservices.repository.UserDataRepository;
@@ -76,5 +77,11 @@ public class LibraryServiceDiscoveryServerApplication {
 	public UserAuthenticationRepository userValidator() {
 		System.err.println(this.SERVICE_URL+"::: User validator created");
 		return new UserAuthenticationRepository();
+	}
+
+	@Bean
+	public MailServiceRepository mailService() {
+		System.err.println(this.MAIL_SERVICE+"::: Mail service created");
+		return new MailServiceRepository();
 	}
 }

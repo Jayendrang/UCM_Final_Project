@@ -56,5 +56,11 @@ public interface BookServices extends JpaRepository<books_info, String> {
 	@Query(value="UPDATE books_info books SET books.status='REMOVED' WHERE books.institution_id=:inst_id")
 	public int removeBooksFromRepo(@Param("inst_id")String inst);
 	
+
+	@Transactional
+	@Modifying
+	@Query(value="UPDATE books_info books SET books.status='REMOVED' WHERE books.book_id=:book_id")
+	public int removeBook(@Param("book_id")String id);
 	
+
 }

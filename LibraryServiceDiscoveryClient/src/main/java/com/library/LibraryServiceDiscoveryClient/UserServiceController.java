@@ -31,6 +31,8 @@ public class UserServiceController {
 	
 	@PostMapping("/modify")
 	public user_profile modifyUserInfo( @RequestBody user_profile data) {
+		System.err.println(data.getRecovery_question1()+"-----"+data.getRecovery_answer1());
+		System.err.println(data.getRecovery_question2()+"-----"+data.getRecovery_answer2());
 		return userService.updateProfile(data);
 	}
 	

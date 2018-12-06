@@ -38,7 +38,7 @@ public class BooksInfo {
 	}
 
 	public void setBook_name(String book_name) {
-		this.book_name = book_name;
+		this.book_name = book_name.toUpperCase();
 	}
 
 	public String getBook_isbn() {
@@ -54,7 +54,7 @@ public class BooksInfo {
 	}
 
 	public void setBook_genre(String book_genre) {
-		this.book_genre = book_genre;
+		this.book_genre = book_genre.toUpperCase();
 	}
 
 	public String getAuthor() {
@@ -62,7 +62,7 @@ public class BooksInfo {
 	}
 
 	public void setAuthor(String author) {
-		this.author = author;
+		this.author = author.toUpperCase();
 	}
 
 	public String getEdition() {

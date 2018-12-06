@@ -56,8 +56,13 @@ public class TransactionServicesImpl {
 	public List<library_transactions> getTransactionById(@RequestParam(name = "user_id") String user_id)
 			throws NoSuchElementException {
 		List<library_transactions> transdata = transactionService.getBooksInfo(user_id);
+		HashMap<String, library_transactions> result = new HashMap<>();
+		for(library_transactions trans:transdata) {
+			result.put(trans.getTransaction_id(), trans);
+		}
+		List<library_transactions> response = new ArrayList<>(result.values());
 		if (!transdata.isEmpty()) {
-			return transdata;
+			return response;
 		}
 
 		return null;

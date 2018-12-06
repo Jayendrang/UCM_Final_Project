@@ -9,14 +9,19 @@ import java.util.Optional;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+
+import com.netflix.client.http.HttpRequest;
+
 import library.app.dao.model.StubClass;
 import library.app.dao.model.books_info;
 import library.app.dao.model.file_logger;
@@ -60,7 +65,7 @@ public class BookServicesImpl {
 		}
 		return null;
 	}
-
+	
 	// save list of books from by institution id
 
 	@PostMapping("/savebooks")
@@ -78,7 +83,7 @@ public class BookServicesImpl {
 						.concat(books.getBook_id());
 				books.setRepo_path(tBookRepoPath.concat(".pdf"));
 				books.setBook_cover_path(institute_info.get().getServer_repo_path().concat("/thumbnails/")
-						.concat(books.getBook_id().concat(".png")));
+						.concat(books.getBook_id().concat(".jpeg")));
 				books.setStatus(AppConstants.BOOKS_STATUS_NEW);
 				books_info book = bookservices.save(books);
 				
@@ -105,18 +110,14 @@ public class BookServicesImpl {
 
 	@SuppressWarnings("unchecked")
 	@PostMapping("/removebooks")
-	public boolean removeBooks(@Valid @RequestBody List<String> books) throws Exception {
-		int tcount = 0;
-		for (String inbooks : books) {
-			System.err.println("BOOK DELETED :: SERVICE");
-			if (bookservices.existsById(inbooks)) {
-				System.err.println("BOOK DELETED :: END");
-				tcount = +bookservices.deleteBooks(inbooks);
-
+	public boolean removeBooks(@RequestParam(value="bookid") String books) throws Exception {
+		int tcount=0;
+		System.out.println("BookId--->"+books);
+			if(bookservices.existsById(books)) {
+				tcount+=bookservices.removeBook(books);
 			}
-		}
-
-		return tcount == books.size() ? true : false;
+		
+		return tcount >= 1 ? true : false;
 	}
 
 	// update books info from by institution id
@@ -143,7 +144,7 @@ public class BookServicesImpl {
 
 	@GetMapping("/getBooksByInstitute")
 	public List<books_info> getAllBooksByInstitution(@RequestParam(value = "univ_id") String univ_id) throws Exception {
-
+		
 		List<books_info> books = bookservices.getAllBooksByInstitution(univ_id);
 		if (books != null) {
 			return books;
@@ -207,6 +208,7 @@ public class BookServicesImpl {
 
 	@GetMapping("/getAllBooksCountByGenre")
 	public List<StubClass> getBooksCountGenre() {
+		
 		String[] data = bookservices.getBookCollectionByGenre();
 		List<StubClass> response = new ArrayList<>();
 
@@ -224,7 +226,7 @@ public class BookServicesImpl {
 
 	@GetMapping("/getRandomBooks")
 	public List<books_info> getRandomBook() {
-		return bookservices.getRandomBooks(new PageRequest(0, 10));
+		return bookservices.getRandomBooks(new PageRequest(0, 5));
 	}
 
 	// BooksbyGenre

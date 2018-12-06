@@ -8,8 +8,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface LibraryFileRepoService {
 
-	public String setupInstitutionRepository(String institutionName);
-	public String uploadBooks(MultipartFile file, String fileLocation, String fileName );
+	public boolean setupInstitutionRepository(String institutionName);
+	public boolean uploadBooks(MultipartFile file, String fileLocation, String fileName );
 	public ResponseEntity<Resource> downloadFile(String serverPath, String fileName,HttpServletRequest postRequest);
-	public String removeBook(String path,String fileName);
+	public boolean removeBook(String path,String fileName);
 }

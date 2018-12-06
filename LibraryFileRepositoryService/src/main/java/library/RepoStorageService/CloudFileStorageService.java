@@ -62,8 +62,8 @@ public class CloudFileStorageService {
 		return uploadFile;
 	}
 
-	public String createFolderInS3(String foldername) {
-		String response = null;
+	public boolean createFolderInS3(String foldername) {
+		boolean response = false;
 		try {
 			ObjectMetadata metadata = new ObjectMetadata();
 			metadata.setContentLength(0);
@@ -82,21 +82,21 @@ public class CloudFileStorageService {
 				this.awsFileStorageClient.putObject(universityRepoThumbnailObject);
 
 				if (this.awsFileStorageClient.doesBucketExist(storageName.concat("/").concat(foldername))) {
-					response = "University repository created";
+					response = true;
 
 				}
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			response = "File operation failed";
+			response = false;
 		}
 		return response;
 	}
 
-	public synchronized String uploadFileToS3(MultipartFile multipartFile, String s3Path, String fileName) {
+	public synchronized boolean uploadFileToS3(MultipartFile multipartFile, String s3Path, String fileName) {
 		String fileUri = null;
 		String thumbnailUri = null;
-		String response = null;
+		boolean response = true;
 		try {
 
 			File file = convertMultipartToFile(multipartFile);
@@ -122,33 +122,33 @@ public class CloudFileStorageService {
 				
 				imgFile.delete();
 
-				response = "Successfully uploaded";
+				response = true;
 			}
 
 			file.delete();
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			response = "File upload operation failed";
+			response = false;
 		}
 		return response;
 	}
 
-	public String deleteFileInS3(String s3Path, String fileName) {
+	public boolean deleteFileInS3(String s3Path, String fileName) {
 		String fileUri = null;
-		String response = null;
+		boolean response = false;
 		try {
 			fileUri = storageName.concat("/").concat(s3Path);
 			if (this.awsFileStorageClient.doesBucketExist(fileUri)) {
 				System.err.println("repo exists-->" + fileUri);
 
 				this.awsFileStorageClient.deleteObject(new DeleteObjectRequest(fileUri, fileName));
-				response = "Successfully deleted";
+				response = true;
 			}
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			response = "File delete operation failed";
+			response = false;
 		}
 		return response;
 	}

@@ -1,14 +1,18 @@
-package library.pojo;
+package com.library.pojo;
 
-public class MailResponse {
+import java.io.Serializable;
+
+public class MailResponse implements Serializable {
+	
 	private String recieverName;
 	private String status;
 
-	public MailResponse()
-	{
-		
+	public MailResponse() {
+
 	}
+
 	public MailResponse(String tReciever, String tStatus) {
+
 		this.recieverName = tReciever;
 		this.status = tStatus;
 	}

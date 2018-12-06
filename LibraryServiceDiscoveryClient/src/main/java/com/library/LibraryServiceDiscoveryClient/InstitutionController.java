@@ -2,6 +2,8 @@ package com.library.LibraryServiceDiscoveryClient;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,17 +42,12 @@ public class InstitutionController {
 	}
 	
 	@PostMapping("/updateStatus")
-	public String updateInstitutionStatus(@RequestBody String body) throws Exception {
+	public boolean updateInstitutionStatus(@RequestBody String body) throws Exception {
 		System.err.println(body);
 		
 		boolean response = institutionService.updateInstitutionStatus(body);
-		String httpResponse=null;
-		if(response) {
-			httpResponse = "Successfully updated status to "  ;
-		} else {
-			httpResponse = " Status update failed";
-		}
-		return httpResponse;
+	
+		return response;
 	}
 	
 	@PostMapping("/updateProfile")
@@ -59,7 +56,8 @@ public class InstitutionController {
 	}
 	
 	@GetMapping("/totalCount")
-	public StubClass getTotalCount() {
+	public StubClass getTotalCount(HttpSession session ) {
+	
 		return institutionService.getTotalCount();
 	}
 	

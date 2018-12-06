@@ -1,24 +1,26 @@
 package library.app.LibraryDAOService;
 
-import java.util.Date;
 import java.util.Optional;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.http.Header;
+import org.apache.http.HttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.fasterxml.jackson.databind.JsonNode;
-
 import library.app.dao.model.user_profile;
 import library.app.dao.model.usercreds_info;
 import library.app.services.UserServices;
@@ -48,6 +50,7 @@ public class AuthenticationServicesImpl {
 				if (data.get().getPassword().equals(uPassword)) {
 					System.err.println(data.get().getEmail_id());
 					session.setAttribute("sessionidinfo", data.get().getUser_id());
+					session.setAttribute("PRINCIPAL_NAME", uName);
 					userResponse.setUID(session.getId());
 					userResponse.setMessage("Accepted");
 					userResponse.setUser_profile((user_profile)data.get());
@@ -66,8 +69,9 @@ public class AuthenticationServicesImpl {
 
 	//remove sessionid
 	@PostMapping("/invalidate")
-	public String closeSession(HttpServletRequest request) {
-		request.getSession().invalidate();
-		return "Closed";
+	public Boolean closeSession(@RequestHeader(name="JSESSIONID") String id, HttpSession session) {
+			
+			session.invalidate();
+			return true;
 	}
 }

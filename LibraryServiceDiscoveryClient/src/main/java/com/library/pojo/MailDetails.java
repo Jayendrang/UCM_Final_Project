@@ -1,4 +1,4 @@
-package library.pojo;
+package com.library.pojo;
 
 
 public class MailDetails {
@@ -11,14 +11,12 @@ public class MailDetails {
 
 	}
 
-	public MailDetails(String tReciever, String tUsername, String tPassword,String role) {
+	public MailDetails(String mailid,String tReciever, String tUsername, String tPassword) {
 		this.mailid = tReciever;
 		this.userid = tUsername;
 		this.password = tPassword;
-		this.role= role;
+		this.mailid= mailid;
 	}
-
-	
 
 	public String getMailid() {
 		return mailid;
@@ -52,5 +50,6 @@ public class MailDetails {
 		this.role = role;
 	}
 
-	
+
+
 }

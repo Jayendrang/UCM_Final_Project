@@ -30,13 +30,14 @@ public class CloudFileManagement {
 	
 	public List<FileLoggerPojo> downloadFilesToLocal() throws Exception {
 
-		AmazonS3 s3Client = awsFileManagement.getConnection();
 		List<FileLoggerPojo> filesInfo = dbFileManagement.getNewFileList();
 		List<FileLoggerPojo> processedFile = new ArrayList<>();
+		AmazonS3 s3Client = awsFileManagement.getConnection();
 		for (FileLoggerPojo file : filesInfo) {
-			boolean isExists=s3Client.doesObjectExist(awsFileManagement.getBucketname(), file.getRepo_path());
+			System.out.println(file.getRepo_path());
+			boolean isExists=s3Client.doesObjectExist(awsFileManagement.getBucketname(), file.getRepo_path().concat(".pdf"));
 			if (isExists) {
-				S3Object s3fileObject = s3Client.getObject(awsFileManagement.getBucketname(), file.getRepo_path());
+				S3Object s3fileObject = s3Client.getObject(awsFileManagement.getBucketname(), file.getRepo_path().concat(".pdf"));
 				S3ObjectInputStream s3InputStream = s3fileObject.getObjectContent();
 				String filepath =hdfsProperties.getLocalFileSourcePath().concat("/"+file.getBook_id().concat(".pdf"));
 				System.err.println("Cloud files downloaded to "+filepath);

@@ -169,7 +169,7 @@ public class user_profile implements Serializable {
 	}
 
 	public void setRole(String role) {
-		this.role = role;
+		this.role = role.toUpperCase();
 	}
 
 	public String getUser_fname() {

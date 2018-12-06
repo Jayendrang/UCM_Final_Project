@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.library.service.LibraryFileRepoService;
+import com.library.utils.AppUtils;
 
 @CrossOrigin(origins="*",allowedHeaders="*")
 @RestController
@@ -27,7 +29,7 @@ public class FileServiceController {
 	LibraryFileRepoService fileService;
 
 	@PostMapping("/upload")
-	public String uploadBooks(@RequestPart(required=true) MultipartFile file,
+	public boolean uploadBooks(@RequestPart(required=true) MultipartFile file,
 			@RequestParam(value = "repo") String institutionRepo, @RequestParam(value = "filename") String fileName) {
 		
 		
@@ -43,7 +45,9 @@ public class FileServiceController {
 	}
 
 	@PostMapping("/setup")
-	public String setupRepositoryForUniversity(@RequestParam(value = "name") String name) {
-		return fileService.setupInstitutionRepository(name);
+	public boolean setupRepositoryForUniversity(@RequestBody String name)throws Exception {
+		JsonNode node = AppUtils.parseJson(name);
+		
+		return fileService.setupInstitutionRepository(node.get("server_repo_path").asText());
 	}
 }

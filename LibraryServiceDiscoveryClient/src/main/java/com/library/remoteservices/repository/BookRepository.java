@@ -35,7 +35,7 @@ public class BookRepository implements BookServices {
 	private final String textSearch = bookTextSearchServiceURL.concat("/textsearch");
 
 	@Override
-	public List<BooksInfo> getBooksById(String bookId) throws NullPointerException {
+	public List<BooksInfo> getBooksById(String []bookId) throws NullPointerException {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getBooks).queryParam("bookid", bookId);
 
 		return restTemplate.getForObject(builder.build().toUriString(), List.class);
@@ -48,15 +48,15 @@ public class BookRepository implements BookServices {
 	}
 
 	@Override
-	public boolean removeBooks(List<String> books) {
-		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(removebooks);
+	public boolean removeBooks(String books) {
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(removebooks).queryParam("bookid", books);
 		return restTemplate.postForObject(builder.build().toUriString(), books, boolean.class);
 	}
 
 	@Override
-	public List<BooksInfo> updateBooksInfo(BooksInfo books) {
+	public BooksInfo updateBooksInfo(BooksInfo books) {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(updatebooks);
-		return restTemplate.postForObject(builder.build().toUriString(), books, List.class);
+		return restTemplate.postForObject(builder.build().toUriString(), books, BooksInfo.class);
 	}
 
 	@Override
@@ -106,7 +106,7 @@ public class BookRepository implements BookServices {
 	}
 
 	@Override
-	public List<SearchResultPojo> getTextSearch(List<String> input) {
+	public List<SearchResultPojo> getTextSearch(String input) {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(textSearch).queryParam("keywords", input);
 		return restTemplate.getForObject(builder.build().toUriString(), List.class);
 	}

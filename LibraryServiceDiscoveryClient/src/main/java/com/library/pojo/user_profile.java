@@ -69,7 +69,7 @@ public class user_profile {
 	}
 
 	public void setRole(String role) {
-		this.role = role;
+		this.role=role;
 	}
 
 	public String getUser_fname() {
@@ -89,35 +89,35 @@ public class user_profile {
 	}
 
 	public String getRecovery_question1() {
-		return recovery_question1;
+		return recovery_question1.toUpperCase();
 	}
 
 	public void setRecovery_question1(String recovery_question1) {
-		this.recovery_question1 = recovery_question1;
+		this.recovery_question1 = recovery_question1.toUpperCase();
 	}
 
 	public String getRecovery_answer1() {
-		return recovery_answer1;
+		return recovery_answer1.toUpperCase();
 	}
 
 	public void setRecovery_answer1(String recovery_answer1) {
-		this.recovery_answer1 = recovery_answer1;
+		this.recovery_answer1 = recovery_answer1.toUpperCase();
 	}
 
 	public String getRecovery_question2() {
-		return recovery_question2;
+		return recovery_question2.toUpperCase();
 	}
 
 	public void setRecovery_question2(String recovery_question2) {
-		this.recovery_question2 = recovery_question2;
+		this.recovery_question2 = recovery_question2.toUpperCase();
 	}
 
 	public String getRecovery_answer2() {
-		return recovery_answer2;
+		return recovery_answer2.toUpperCase();
 	}
 
 	public void setRecovery_answer2(String recovery_answer2) {
-		this.recovery_answer2 = recovery_answer2;
+		this.recovery_answer2 = recovery_answer2.toUpperCase();
 	}
 
 	public String getInvite_id() {
@@ -173,7 +173,7 @@ public class user_profile {
 	}
 
 	public void setStatus(String status) {
-		this.status = status;
+		this.status = status.toUpperCase();
 	}
 
 	public String getIs_locked() {
@@ -181,7 +181,7 @@ public class user_profile {
 	}
 
 	public void setIs_locked(String is_locked) {
-		this.is_locked = is_locked;
+		this.is_locked = is_locked.toUpperCase();
 	}
 
 }

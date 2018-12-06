@@ -1,5 +1,6 @@
 package library.app.LibraryDAOService;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -51,7 +52,7 @@ public class UserServicesImpl {
 
 	// Register new user
 	@PostMapping("/register")
-	public user_profile registerNewUserProfile(@RequestBody user_profile user) throws Exception {
+	public user_profile registerNewUserProfile(@RequestBody user_profile user) throws Exception,IOException {
 		user.setUser_id(UniqueIdGenerator.getRandomUserID(user.getUser_fname(), user.getUser_lname()));
 		// user.setPassword(passwordEncoder.encode(user.getPassword()));
 		user.setStatus(AppConstants.ACTIVE_USER_STATUS);
@@ -60,14 +61,18 @@ public class UserServicesImpl {
 		String tString = user.getEmail_id();
 		String institution_domain = user.getEmail_id().substring(user.getEmail_id().lastIndexOf("@") + 1);
 		institution_info data = institutionServices.getInstitutionByDomain(institution_domain);
+		if(data.equals(null)) {
+			throw new UserExceptions("Requesting university not participating in this program");
+		}else {
 		user.setInstitution_id(data.getInstitution_id());
 		user.setInstitution_name(data.getInstitution_name());
 		user.setInvite_id(UniqueIdGenerator.getReferenceID());
-
+		}
 		if (!userservices.existsById(user.getUser_id())) {
 			return userservices.save(user);
+		} else {
+			throw new UserExceptions("User already registered, please reset the login credentials");
 		}
-		return null;
 	}
 
 	// Library and Admin User registeration
@@ -90,12 +95,20 @@ public class UserServicesImpl {
 	}
 
 	// Update user profile
-	@PutMapping("/updateuserprofile")
+	@PostMapping("/updateuserprofile")
 	public user_profile updateUserProfile(@RequestBody user_profile user) throws Exception {
-		if (userservices.existsById(user.getUser_id())) {
-			return userservices.save(user);
+		Optional<user_profile> data = userservices.findById(user.getUser_id());
+		if (data.isPresent()) {
+			user_profile profileData = data.get();
+			profileData.setRecovery_question1(user.getRecovery_question1());
+			profileData.setRecovery_answer1(user.getRecovery_answer1());
+			profileData.setRecovery_question2(user.getRecovery_question2());
+			profileData.setRecovery_answer2(user.getRecovery_answer2());
+			profileData.setPassword(user.getPassword());
+			profileData.setEmail_id(user.getEmail_id());
+			return userservices.save(profileData);
 		}
-		return null;
+		return new user_profile();
 	}
 
 	// Deactivate user profile

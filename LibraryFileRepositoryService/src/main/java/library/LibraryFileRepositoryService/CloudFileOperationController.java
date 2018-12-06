@@ -31,18 +31,18 @@ public class CloudFileOperationController {
 
 	@PostMapping("upload")
 	@ResponseBody
-	public String fileUpload( @RequestPart MultipartFile file, @RequestParam(value="path")String path,@RequestParam(value="name")String filename)throws Exception {
+	public boolean fileUpload( @RequestPart MultipartFile file, @RequestParam(value="path")String path,@RequestParam(value="name")String filename)throws Exception {
 		
 		return this.cloudFileOps.uploadFileToS3(file,path,filename );
 	}
 
 	@PostMapping("remove")
-	public String deleteFile(@RequestParam(value="path") String path, @RequestParam(value="name") String fileName) {
+	public boolean deleteFile(@RequestParam(value="path") String path, @RequestParam(value="name") String fileName) {
 		return this.cloudFileOps.deleteFileInS3(path,fileName);
 	}
 	
 	@PostMapping("create")
-	public String createUniversityBookRepository(@RequestParam(value="name") String name) {
+	public boolean createUniversityBookRepository(@RequestParam(value="name") String name) {
 		System.err.println("inside controller");
 		return this.cloudFileOps.createFolderInS3(name);
 	}
