@@ -50,17 +50,17 @@ public class library_transactions implements Serializable {
 
 	private String remarks;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "book_id", nullable = false, insertable = false, updatable = false)
-	@JsonIgnore
-	private books_info books;
+//	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+//	@JoinColumn(name = "book_id", nullable = false, insertable = false, updatable = false)
+//	@JsonIgnore
+//	private books_info books;
 
 	
-
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "user_id", nullable = false, insertable = false, updatable = false)
-	@JsonIgnore
-	private user_profile profile;
+//
+//	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+//	@JoinColumn(name = "user_id", nullable = false, insertable = false, updatable = false)
+//	@JsonIgnore
+//	private user_profile profile;
 
 	private String institution_id;
 
@@ -80,13 +80,13 @@ public class library_transactions implements Serializable {
 		this.remarks = remarks;
 	}
 
-	public books_info getBooks() {
-		return books;
-	}
-
-	public void setBooks(books_info books) {
-		this.books = books;
-	}
+//	public books_info getBooks() {
+//		return books;
+//	}
+//
+//	public void setBooks(books_info books) {
+//		this.books = books;
+//	}
 
 	public String getTransaction_id() {
 		return transaction_id;
@@ -119,11 +119,11 @@ public class library_transactions implements Serializable {
 	public void setTransaction_date(Date transaction_date) {
 		this.transaction_date = transaction_date;
 	}
-	public user_profile getProfile() {
-		return profile;
-	}
-
-	public void setProfile(user_profile profile) {
-		this.profile = profile;
-	}
+//	public user_profile getProfile() {
+//		return profile;
+//	}
+//
+//	public void setProfile(user_profile profile) {
+//		this.profile = profile;
+//	}
 }

@@ -20,9 +20,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import library.app.dao.model.StubClass;
 import library.app.dao.model.institution_info;
+import library.app.dao.model.user_profile;
 import library.app.exceptions.InstitutionExceptions;
 import library.app.services.BookServices;
 import library.app.services.InstitutionServices;
+import library.app.services.UserServices;
 import library.app.utilities.AppConstants;
 import library.app.utilities.AppUtils;
 import library.app.utilities.UniqueIdGenerator;
@@ -37,6 +39,9 @@ public class InstitutionServicesImpl {
 
 	@Autowired
 	BookServices bookservices;
+
+	@Autowired
+	UserServices userservices;
 
 	@GetMapping("/getInfo")
 	public institution_info getOneInstitutionInfo(@RequestParam(value = "institution_id") String ins_id)
@@ -58,16 +63,21 @@ public class InstitutionServicesImpl {
 	@PostMapping("/saveInstitution")
 	public @Valid institution_info saveInstitutionInfo(@RequestBody institution_info insData,
 			@RequestParam(value = "adminId") String adminId) {
-		insData.setInstitution_id(UniqueIdGenerator.getRandomUniversityID(insData.getInstitution_name()));
-		insData.setInstitution_email_domain(
-				insData.getInstitution_email_id().substring(insData.getInstitution_email_id().lastIndexOf("@") + 1));
-		insData.setInstitution_id(UniqueIdGenerator.getRandomUniversityID(insData.getInstitution_name()));
-		insData.setServer_repo_path(insData.getInstitution_email_domain().replaceAll(".edu", ""));
-		insData.setInstitution_invite_id(UniqueIdGenerator.getRandomID());
-		System.err.println(insData.getInstitution_id());
-		insData.setStatus(AppConstants.STATUS_ACTIVE);
-		insData.setCreated_by(adminId);
-		return instiServices.save(insData);
+		user_profile user = userservices.findById(adminId).get();
+		institution_info response = new institution_info();
+		if (user.getRole().equalsIgnoreCase("adm")) {
+			insData.setInstitution_id(UniqueIdGenerator.getRandomUniversityID(insData.getInstitution_name()));
+			insData.setInstitution_email_domain(insData.getInstitution_email_id()
+					.substring(insData.getInstitution_email_id().lastIndexOf("@") + 1));
+			insData.setInstitution_id(UniqueIdGenerator.getRandomUniversityID(insData.getInstitution_name()));
+			insData.setServer_repo_path(insData.getInstitution_email_domain().replaceAll(".edu", ""));
+			insData.setInstitution_invite_id(UniqueIdGenerator.getRandomID());
+			System.err.println(insData.getInstitution_id());
+			insData.setStatus(AppConstants.STATUS_ACTIVE);
+			insData.setCreated_by(adminId);
+			response = instiServices.save(insData);
+		}
+		return response;
 	}
 
 	@PostMapping("/statusupdate")
@@ -75,15 +85,17 @@ public class InstitutionServicesImpl {
 	public boolean updateInstitutionStatus(@RequestBody String requestBody) throws Exception {
 		JsonNode node = AppUtils.parseJson(requestBody);
 		int result = 0;
-		int bookresult=0;
+		int bookresult = 0;
+		user_profile user = userservices.findById(node.get("userid").asText()).get();
+		if(user.getRole().equalsIgnoreCase("adm")) {
 		if (node.get("status").textValue().equalsIgnoreCase("DEACTIVATE")) {
 			result = instiServices.updateInstitutionStatus("deactivated".toUpperCase(), node.get("userid").textValue(),
 					node.get("institutionid").textValue());
 			if (result > 0) {
 				bookresult = bookservices.removeBooksFromRepo(node.get("institutionid").textValue());
+				}
 			}
 		}
-		System.err.println(node.get("userid").textValue());
 		return result > 0 ? true : false;
 	}
 

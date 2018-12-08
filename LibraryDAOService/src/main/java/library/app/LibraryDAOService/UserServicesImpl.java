@@ -52,21 +52,23 @@ public class UserServicesImpl {
 
 	// Register new user
 	@PostMapping("/register")
-	public user_profile registerNewUserProfile(@RequestBody user_profile user) throws Exception,IOException {
+	public user_profile registerNewUserProfile(@RequestBody user_profile user) throws Exception, IOException {
 		user.setUser_id(UniqueIdGenerator.getRandomUserID(user.getUser_fname(), user.getUser_lname()));
-		// user.setPassword(passwordEncoder.encode(user.getPassword()));
 		user.setStatus(AppConstants.ACTIVE_USER_STATUS);
 		user.setIs_locked(AppConstants.IS_LOCKED_CLEAN);
 
 		String tString = user.getEmail_id();
 		String institution_domain = user.getEmail_id().substring(user.getEmail_id().lastIndexOf("@") + 1);
 		institution_info data = institutionServices.getInstitutionByDomain(institution_domain);
-		if(data.equals(null)) {
+		if (data.equals(null)) {
 			throw new UserExceptions("Requesting university not participating in this program");
-		}else {
-		user.setInstitution_id(data.getInstitution_id());
-		user.setInstitution_name(data.getInstitution_name());
-		user.setInvite_id(UniqueIdGenerator.getReferenceID());
+		} else if (data.getStatus().equalsIgnoreCase("deactivated")) {
+			throw new UserExceptions("Requesting university not participating in this program");
+
+		} else {
+			user.setInstitution_id(data.getInstitution_id());
+			user.setInstitution_name(data.getInstitution_name());
+			user.setInvite_id(UniqueIdGenerator.getReferenceID());
 		}
 		if (!userservices.existsById(user.getUser_id())) {
 			return userservices.save(user);
@@ -202,8 +204,6 @@ public class UserServicesImpl {
 		}
 		return false;
 	}
-
-
 
 	@GetMapping("/count")
 	public StubClass getCount() {

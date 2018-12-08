@@ -26,7 +26,7 @@ public interface BookServices extends JpaRepository<books_info, String> {
 
 	@Query(value = "select distinct(book_genre),count(institution_name) from books_info where institution_id=?1 and status='AVAILABLE' group by book_genre ")
 	public String[] getBooksGenreByInstitution(String institution_id);
-
+	
 	@Query(value = "delete from books_info books where books.book_id=?1")
 	public int deleteBooks(String book_id);
 
@@ -62,5 +62,5 @@ public interface BookServices extends JpaRepository<books_info, String> {
 	@Query(value="UPDATE books_info books SET books.status='REMOVED' WHERE books.book_id=:book_id")
 	public int removeBook(@Param("book_id")String id);
 	
-
+	
 }

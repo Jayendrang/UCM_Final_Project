@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.library.pojo.BooksInfo;
 import com.library.pojo.StubClass;
 import com.library.pojo.Transactions;
 import com.library.service.LibraryTransactionService;
@@ -38,7 +39,7 @@ public class TransactionRepository implements LibraryTransactionService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Transactions> getAllTransaction(String userId) {
+	public List<BooksInfo> getAllTransaction(String userId) {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getAllTransctionById).queryParam("user_id",
 				userId);
 		return restTemplate.getForObject(builder.build().toUriString(), List.class);

@@ -3,7 +3,6 @@ package library.app.LibraryDAOService;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -11,6 +10,7 @@ import java.util.NoSuchElementException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,13 +19,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import library.app.dao.model.StubClass;
+import library.app.dao.model.books_info;
 import library.app.dao.model.library_transactions;
+import library.app.services.BookServices;
 import library.app.services.BookTransactionService;
 import library.app.utilities.AppUtils;
 import library.app.utilities.UniqueIdGenerator;
@@ -34,18 +33,25 @@ import library.app.utilities.UniqueIdGenerator;
 @RestController
 @RequestMapping("/library/transactions")
 public class TransactionServicesImpl {
-
 	public TransactionServicesImpl() {
 	}
+@Override
+public String toString() {
+	// TODO Auto-generated method stub
+	return super.toString();
+}
 
 	@Autowired
 	BookTransactionService transactionService;
+	
+	@Autowired
+	BookServices bookservices;
 
 	@PostMapping("/save")
 	public ResponseEntity<library_transactions> saveTransaction(@Valid @RequestBody library_transactions trans) {
 		trans.setTransaction_id(UniqueIdGenerator.getRandomTranxID());
 		library_transactions trans1 = transactionService.save(trans);
-		
+
 		if (!trans1.equals(null)) {
 			return new ResponseEntity<library_transactions>(trans1, HttpStatus.OK);
 		}
@@ -53,14 +59,16 @@ public class TransactionServicesImpl {
 	}
 
 	@GetMapping("/get")
-	public List<library_transactions> getTransactionById(@RequestParam(name = "user_id") String user_id)
+	public List<books_info> getTransactionById(@RequestParam(name = "user_id") String user_id)
 			throws NoSuchElementException {
-		List<library_transactions> transdata = transactionService.getBooksInfo(user_id);
-		HashMap<String, library_transactions> result = new HashMap<>();
-		for(library_transactions trans:transdata) {
-			result.put(trans.getTransaction_id(), trans);
+		List<library_transactions> transdata = new ArrayList<>(transactionService.getBooksInfo(user_id)); 
+		System.err.println("result size" + transdata.size());
+		HashMap<String, String> data = new HashMap<>();
+		for(library_transactions info:transdata) {
+			data.put(info.getTransaction_id(), info.getBook_id());
 		}
-		List<library_transactions> response = new ArrayList<>(result.values());
+		List<String> transBookDetails = new ArrayList<>(data.values());
+		List<books_info> response = bookservices.findAllById(transBookDetails);
 		if (!transdata.isEmpty()) {
 			return response;
 		}
@@ -106,10 +114,11 @@ public class TransactionServicesImpl {
 			for (int k = 1; k < 5; k++) {
 				String[] days = weeks.get(k).split("/");
 				StubClass responsepart = new StubClass();
-				responsepart.setKey("week"+String.valueOf(k));
+				responsepart.setKey("week" + String.valueOf(k));
 				startDate = new Date(sqlDate.parse(days[0]).getTime());
 				endDate = new Date(sqlDate.parse(days[1]).getTime());
-				responsepart.setValue(String.valueOf(transactionService.getTransactionVolumeByWeek(startDate,endDate)));
+				responsepart
+						.setValue(String.valueOf(transactionService.getTransactionVolumeByWeek(startDate, endDate)));
 				response.add(responsepart);
 			}
 		} else {
@@ -117,15 +126,18 @@ public class TransactionServicesImpl {
 			for (int k = 1; k < 5; k++) {
 				String[] days = weeks.get(k).split("/");
 				StubClass responsepart = new StubClass();
-				responsepart.setKey("week"+String.valueOf(k));
+				responsepart.setKey("week" + String.valueOf(k));
 				startDate = new Date(sqlDate.parse(days[0]).getTime());
 				endDate = new Date(sqlDate.parse(days[1]).getTime());
-				responsepart.setValue(String.valueOf(transactionService.getTransactionVolumeByWeekForInstitution(startDate,endDate,institution_id)));
+				int totalforinstitution = transactionService.getTotalTransactionPerInstitute1(institution_id, startDate, endDate);
+				int totalfornoninstituon= transactionService.getTotlTransactionNonInstitute(institution_id, startDate, endDate);
+				System.out.println(totalforinstitution+"///"+totalfornoninstituon);
+				responsepart.setValue(String.valueOf(totalforinstitution)+","+String.valueOf(totalfornoninstituon));
 				response.add(responsepart);
 			}
 		}
 
 		return response;
 	}
-
+	
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.library.pojo.BooksInfo;
 import com.library.pojo.StubClass;
 import com.library.pojo.Transactions;
 import com.library.service.LibraryTransactionService;
@@ -30,7 +31,7 @@ public class TransactionController {
 	}
 	
 	@GetMapping("/getAllTransactions")
-	public List<Transactions> getAllTransactions(@RequestParam(value="id")String userId){
+	public List<BooksInfo> getAllTransactions(@RequestParam(value="id")String userId){
 		return transactionService.getAllTransaction(userId);
 	}
 	
